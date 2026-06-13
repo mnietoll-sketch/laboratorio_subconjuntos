@@ -1,18 +1,15 @@
 #include "node.h"
 
 int main(){
-	Node q0, q1, q2;
+	Vertex vertexes[MAX_SIZE];
+	for(int i = 0; i < MAX_SIZE; i++){
+		initializeVertex(&vertexes[i], i, 0, 0);
+	}
+	vertexes[0].isStart = vertexes[MAX_SIZE - 1].isEnd = 1;
 
-	initializeNode(&q0, 0, 1, 0);
-	initializeNode(&q1, 1, 0, 0);
-	initializeNode(&q2, 2, 0, 1);
-
-	addChildren(&q0, &q1);
-	addChildren(&q0, &q2);
-	addChildren(&q1, &q2);
-
-	printNode(&q0);
-	printNode(&q1);
-	printNode(&q2);
-	return 0;
+	Edge edges[MAX_SIZE - 1];
+	for(int i = 0; i < MAX_SIZE - 1; i++){
+		initializeEdge(&edges[i], &vertexes[i], &vertexes[i + 1], 'a');
+		addEdge(&vertexes[i], &edges[i]);
+	}
 }

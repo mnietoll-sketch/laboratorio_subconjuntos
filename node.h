@@ -1,18 +1,31 @@
 #ifndef NODE_H
 #define NODE_H
+
 #define MAX_SIZE 10
 
-typedef struct Node{
+typedef struct Vertex Vertex;
+typedef struct Edge Edge;
+
+struct Edge{
+	Vertex *src;
+	Vertex *dest;
+
+	char alpha;
+};
+
+struct Vertex{
 	int id;
 	int isStart;
 	int isEnd;
+	
+	int numEdges;
+	Edge *edges[MAX_SIZE];
+};
 
-	struct Node *children[MAX_SIZE];
-	int numChildren;
-} Node;
 
-void initializeNode(Node *, int, int, int);
-Node* addChildren(Node *, Node *);
-void nodeCopy(Node *, Node *);
-void printNode(Node *);
+void initializeVertex(Vertex *, int, int, int);
+void initializeEdge(Edge *, Vertex *, Vertex *, char);
+
+int addEdge(Vertex *, Edge *);
+
 #endif
