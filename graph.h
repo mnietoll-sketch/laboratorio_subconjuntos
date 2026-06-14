@@ -14,20 +14,28 @@ struct Graph{
 	int numAlphabet;
 	int numEnds;
 	
-	Vertex vertexes[MAX_VERTEXES];
-	Edge edges[MAX_VERTEXES * MAX_EDGES]
+	Vertex *vertexes[MAX_VERTEXES];
+	Edge *edges[MAX_VERTEXES * MAX_EDGES]
 	char alphabet[MAX_ALPHABET];
 	int idEnds[MAX_VERTEXES];
 }
 
-setIdStart();
-addIdEnd();
-addVertex();
-addEdge();
-addAlpha();
-addTransition();
-getIdx();
-getEpsilonCLosure();
+void InitializeGraph(Graph *);
+
+void setIdStart(Graph *, int);
+int setVertexes(Graph *, Vertex *, int);
+int setEdges(Graph *, Edge *, int);
+int setAlphabet(Graph *, char *, int);
+int setIdEnds(Graph *, int *, int);
+
+int addVertex(Graph *, Vertex *);
+int addEdge(Graph *, Edge *);
+int addAlpha(Graph *, char);
+int addIdEnd(Graph *, int);
+void addTransition(Graph *, int, int, char);
+
+int getVertexIdx(Graph *, int);
+void getEpsilonCLosure(Graph *, Vertex *, int, int, char);
 
 
 
