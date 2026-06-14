@@ -1,7 +1,7 @@
 #ifndef NODE_H
 #define NODE_H
 
-#define MAX_SIZE 10
+#define MAX_EDGES 10
 
 typedef struct Vertex Vertex;
 typedef struct Edge Edge;
@@ -19,7 +19,7 @@ struct Vertex{
 	int isEnd;
 	
 	int numEdges;
-	Edge *edges[MAX_SIZE];
+	Edge *edges[MAX_EDGES];
 };
 
 

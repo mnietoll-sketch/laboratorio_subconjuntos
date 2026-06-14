@@ -15,7 +15,7 @@ void initializeEdge(Edge *e, Vertex *src, Vertex *dest, char alpha){
 }
 
 int addEdge(Vertex *src, Edge *edge){
-	if(src->numEdges == MAX_SIZE)
+	if(src->numEdges == MAX_EDGES)
 		return 0;
 
 	src->edges[src->numEdges] = edge;
