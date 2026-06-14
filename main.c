@@ -1,4 +1,5 @@
 #include "node.h"
+#include <stdio.h>
 
 int main(){
 	Vertex vertexes[MAX_SIZE];
@@ -11,5 +12,11 @@ int main(){
 	for(int i = 0; i < MAX_SIZE - 1; i++){
 		initializeEdge(&edges[i], &vertexes[i], &vertexes[i + 1], 'a');
 		addEdge(&vertexes[i], &edges[i]);
+	}
+
+	for(int i = 0; i < MAX_SIZE; i++){
+		printf("Vertex{");
+		printVertex(&vertexes[i]);
+		printf("}\n");
 	}
 }

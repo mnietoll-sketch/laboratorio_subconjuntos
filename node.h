@@ -27,5 +27,6 @@ void initializeVertex(Vertex *, int, int, int);
 void initializeEdge(Edge *, Vertex *, Vertex *, char);
 
 int addEdge(Vertex *, Edge *);
-
+void printVertex(Vertex *);
+void printEdge(Edge *);
 #endif
