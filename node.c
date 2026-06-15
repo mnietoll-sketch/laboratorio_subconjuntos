@@ -14,7 +14,7 @@ void initializeEdge(Edge *e, Vertex *src, Vertex *dest, char alpha){
 	e->alpha = alpha;
 }
 
-int addEdge(Vertex *src, Edge *edge){
+int joinVertexEdge(Vertex *src, Edge *edge){
 	if(src->numEdges == MAX_EDGES)
 		return 0;
 

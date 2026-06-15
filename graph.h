@@ -6,6 +6,15 @@
 #define MAX_ALPHABET 10
 
 typedef struct Graph Graph;
+typedef struct Transition Transition;
+
+struct Transition{
+	int idSrc;
+	int idDest;
+	char alpha;
+};
+
+Transition initializeTransition(int, int, char);
 
 struct Graph{
 	int idStart;
@@ -14,25 +23,24 @@ struct Graph{
 	int numAlphabet;
 	int numEnds;
 	
-	Vertex *vertexes[MAX_VERTEXES];
-	Edge *edges[MAX_VERTEXES * MAX_EDGES]
+	Vertex vertexes[MAX_VERTEXES];
+	Edge edges[MAX_VERTEXES * MAX_EDGES];
 	char alphabet[MAX_ALPHABET];
 	int idEnds[MAX_VERTEXES];
-}
+};
 
-void InitializeGraph(Graph *);
+void initializeGraph(Graph *);
 
 void setIdStart(Graph *, int);
-int setVertexes(Graph *, Vertex *, int);
-int setEdges(Graph *, Edge *, int);
 int setAlphabet(Graph *, char *, int);
 int setIdEnds(Graph *, int *, int);
+int setTransitions(Graph *, Transition *, int);
 
-int addVertex(Graph *, Vertex *);
-int addEdge(Graph *, Edge *);
+int addVertex(Graph *, int, int, int);
+int addEdge(Graph *, Vertex *, Vertex *, char);
 int addAlpha(Graph *, char);
 int addIdEnd(Graph *, int);
-void addTransition(Graph *, int, int, char);
+int addTransition(Graph *, Transition);
 
 int getVertexIdx(Graph *, int);
 void getEpsilonCLosure(Graph *, Vertex *, int, int, char);
