@@ -1,5 +1,6 @@
 #include "node.h"
 #include "graph.h"
+#include <stdio.h>
 
 Transition initializeTransition(int idSrc, int idDest, char alpha){
 	Transition result;
@@ -79,7 +80,7 @@ int addAlpha(Graph *graph, char alpha){
 	return 1;
 }
 
-int addEnd(Graph *graph, int idEnd){
+int addIdEnd(Graph *graph, int idEnd){
 	if(graph->numEnds == MAX_VERTEXES)
 		return 0;
 
@@ -109,6 +110,31 @@ int addTransition(Graph *graph, Transition transition){
 	return 1;
 }
 
+int autoSetIdStart(Graph *graph){
+	for(int i = 0; i < graph->numVertexes; i++){
+		if(graph->vertexes[i].isStart){
+			setIdStart(graph, graph->vertexes[i].id);
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+int autoSetIdEnds(Graph *graph){
+	int result = 0;
+
+	for(int i = 0; i < graph->numVertexes; i++){
+		if(graph->vertexes[i].isEnd){
+			if(!addIdEnd(graph, graph->vertexes[i].id))
+				return 0;
+			result++;
+		}
+	}
+
+	return result;
+}
+
 int getVertexIdx(Graph *graph, int id){
 	int result;
 
@@ -118,4 +144,56 @@ int getVertexIdx(Graph *graph, int id){
 	}
 
 	return result;
+}
+
+void printGraph(Graph *graph){
+	printf("idStart: %d, Vertexes:{", graph->idStart);
+	
+	for(int i = 0; i < graph->numVertexes - 1; i++){
+		printf("\n\tVertex:{");
+		printVertex(&graph->vertexes[i]);
+		printf("},");
+	}
+	if(graph->numVertexes - 1 >= 0){
+		printf("\n\tVertex:{");
+		printVertex(&graph->vertexes[graph->numVertexes - 1]);
+		printf("}\n");
+	}
+	printf("}, Edges:{");
+
+	for(int i = 0; i < graph->numEdges - 1; i++){
+		printf("\n\tEdge:{");
+		printEdge(&graph->edges[i]);
+		printf("},");
+	}
+	if(graph->numEdges - 1 >= 0){
+		printf("\n\tEdge:{");
+		printEdge(&graph->edges[graph->numEdges - 1]);
+		printf("}\n");
+	}
+	printf("}, Alphabet:{");
+
+	for(int i = 0; i < graph->numAlphabet - 1; i++){
+		printf("\n\tAlpha:{");
+		printf("%c", graph->alphabet[i]);
+		printf("},");
+	}
+	if(graph->numAlphabet - 1 >= 0){
+		printf("\n\tAlpha:{");
+		printf("%c", graph->alphabet[graph->numAlphabet - 1]);
+		printf("}\n");
+	}
+	printf("}, idEnds:{");
+
+	for(int i = 0; i < graph->numEnds - 1; i++){
+		printf("\n\tidEnd:{");
+		printf("%d", graph->idEnds[i]);
+		printf("},");
+	}
+	if(graph->numEnds - 1 >= 0){
+		printf("\n\tidEnd:{");
+		printf("%d", graph->idEnds[graph->numEnds - 1]);
+		printf("}\n");
+	}
+	printf("}");
 }

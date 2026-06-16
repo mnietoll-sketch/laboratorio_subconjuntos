@@ -42,9 +42,12 @@ int addAlpha(Graph *, char);
 int addIdEnd(Graph *, int);
 int addTransition(Graph *, Transition);
 
+int autoSetIdStart(Graph *);
+int autoSetIdEnds(Graph *);
 int getVertexIdx(Graph *, int);
 void getEpsilonCLosure(Graph *, Vertex *, int, int, char);
 
+void printGraph(Graph *);
 
 
 #endif
