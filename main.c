@@ -33,5 +33,21 @@ int main(){
 	printf("Graph:{");
 	printGraph(&nfa);
 	printf("}\n");
+
+	VertexSet input, output;
+	initializeVertexSet(&input);
+	initializeVertexSet(&output);
+
+	insertVertexSet(&input, &nfa.vertexes[11]);
+	getEpsilonClosure(&nfa, &input, &output);
+	
+	printf("InputSet:{");
+	printSet(&input);
+	printf("}\n");
+
+	printf("OutputSet:{");
+	printSet(&output);
+	printf("}\n");
+
 	return 0;
 }

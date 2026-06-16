@@ -2,6 +2,54 @@
 #include "graph.h"
 #include <stdio.h>
 
+void initializeVertexSet(VertexSet *vertexSet){
+	vertexSet->numVertex = 0;
+}
+
+int setVertexSet(VertexSet *vertexSet, Vertex **vertexes, int size){
+	for(int i = 0; i < size; i++){
+		if(!insertVertexSet(vertexSet, vertexes[i]))
+			return 0;
+	}
+
+	return 1;
+}
+
+int insertVertexSet(VertexSet *vertexSet, Vertex *vertex){
+	if(vertexSet->numVertex == MAX_VERTEXES)
+		return 0;
+	
+	if(NULL != searchVertexSet(vertexSet, vertex))
+		return 1;
+
+	vertexSet->set[vertexSet->numVertex] = vertex;
+	vertexSet->numVertex++;
+	return 1;
+}
+
+Vertex *searchVertexSet(VertexSet *vertexSet, Vertex *vertex){
+	for(int i = 0; i < vertexSet->numVertex; i++)
+		if(vertexSet->set[i]->id == vertex->id)
+			return vertexSet->set[i];
+	return NULL;
+}
+
+void printSet(VertexSet *vertexSet){
+	printf("numVertex: %d, Vertexes:{", vertexSet->numVertex);
+	for(int i = 0; i < vertexSet->numVertex - 1; i++){
+		printf("\n\tVertex:{");
+		printVertex(vertexSet->set[i]);
+		printf("},");
+	}
+	if(vertexSet->numVertex - 1 >= 0){
+		printf("\n\tVertex:{");
+		printVertex(vertexSet->set[vertexSet->numVertex - 1]);
+		printf("}\n");
+	}
+	printf("}");
+}
+		
+
 Transition initializeTransition(int idSrc, int idDest, char alpha){
 	Transition result;
 	result.idSrc = idSrc;
@@ -45,12 +93,11 @@ int setIdEnds(Graph *graph, int *idEnds, int size){
 }
 
 int setTransitions(Graph *graph, Transition *transitions, int size){
-	int result = 1;
-
 	for(int i = 0; i < size; i++)
-		result *= addTransition(graph, transitions[i]);
+		if(!addTransition(graph, transitions[i]))
+			return 0;
 
-	return result;
+	return 1;
 }
 
 int addVertex(Graph *graph, int id, int isStart, int isEnd){
@@ -122,17 +169,14 @@ int autoSetIdStart(Graph *graph){
 }
 
 int autoSetIdEnds(Graph *graph){
-	int result = 0;
-
 	for(int i = 0; i < graph->numVertexes; i++){
 		if(graph->vertexes[i].isEnd){
 			if(!addIdEnd(graph, graph->vertexes[i].id))
 				return 0;
-			result++;
 		}
 	}
 
-	return result;
+	return 1;
 }
 
 int getVertexIdx(Graph *graph, int id){
@@ -145,6 +189,50 @@ int getVertexIdx(Graph *graph, int id){
 
 	return result;
 }
+
+int getEpsilonClosure(Graph *graph, VertexSet *input, VertexSet *output){
+	VertexSet visited;
+	initializeVertexSet(&visited);
+
+	setVertexSet(output, input->set, input->numVertex);
+
+	return getEpsilonClosureRecursive(graph, &visited, output);
+}
+
+int getEpsilonClosureRecursive(Graph *graph, VertexSet *visited, VertexSet *input){
+	int equal = 0;
+
+	for(int i = 0; i < input->numVertex; i++){
+		if(NULL == searchVertexSet(visited, input->set[i])){
+			insertVertexSet(visited, input->set[i]);
+			
+			if(!transitionFunction(graph, input->set[i], EPSILON, input))
+				return 0;
+
+		} else{
+			equal++;
+		}
+	}
+
+	if(equal == input->numVertex)
+		return 1;
+
+	return getEpsilonClosureRecursive(graph, visited, input);
+}
+
+int transitionFunction(Graph *graph, Vertex *vertex, char alpha, VertexSet *vertexSet){
+	if(!insertVertexSet(vertexSet, vertex))
+		return 0;
+
+	for(int i = 0; i < vertex->numEdges; i++){
+		if(vertex->edges[i]->alpha == alpha)
+			if(!insertVertexSet(vertexSet, vertex->edges[i]->dest))
+				return 0;
+	}
+
+	return 1;
+}
+
 
 void printGraph(Graph *graph){
 	printf("idStart: %d, Vertexes:{", graph->idStart);
