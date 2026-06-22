@@ -5,6 +5,9 @@
 void initializeVertexSet(VertexSet *vertexSet){
 	vertexSet->numVertex = 0;
 }
+void setIdVertexSet(VertexSet *vertexSet, int id){
+	vertexSet->id = id;
+}
 
 int setVertexSet(VertexSet *vertexSet, Vertex **vertexes, int size){
 	for(int i = 0; i < size; i++){
@@ -34,8 +37,36 @@ Vertex *searchVertexSet(VertexSet *vertexSet, Vertex *vertex){
 	return NULL;
 }
 
+int equalVertexSet(VertexSet *vertexSet1, VertexSet *vertexSet2){
+	if(vertexSet1->numVertex != vertexSet2->numVertex)
+		return 0;
+	
+	for(int i = 0; i < vertexSet1->numVertex; i++){
+			if(searchVertexSet(vertexSet2, vertexSet1->set[i]) == NULL)
+			return 0;
+	}
+
+	return 1;
+}
+
+void transitionVertexSet(VertexSet *input, VertexSet *output, Graph *graph, char c){
+	for(int i = 0; i < input->numVertex; i++)
+		transitionFunction(graph, input->set[i], c, output);
+}
+
+void epsilonClosureVertexSet(VertexSet *vertexSet, Graph *graph){
+	VertexSet visited;
+	initializeVertexSet(&visited);
+	getEpsilonClosureRecursive(graph, &visited, vertexSet);
+}
+
+void epsilonAndTransitionVertexSet(VertexSet *input, VertexSet *output, Graph *graph, char c){
+	transitionVertexSet(input, output, graph, c);
+	epsilonClosureVertexSet(output, graph);
+}
+
 void printSet(VertexSet *vertexSet){
-	printf("numVertex: %d, Vertexes:{", vertexSet->numVertex);
+	printf("id: %d, numVertex: %d, Vertexes:{", vertexSet->id, vertexSet->numVertex);
 	for(int i = 0; i < vertexSet->numVertex - 1; i++){
 		printf("\n\tVertex:{");
 		printVertex(vertexSet->set[i]);
@@ -190,6 +221,11 @@ int getVertexIdx(Graph *graph, int id){
 	return result;
 }
 
+Vertex *getStart(Graph *graph){
+	int idx = getVertexIdx(graph, graph->idStart);
+	return &graph->vertexes[idx];
+}
+
 int getEpsilonClosure(Graph *graph, VertexSet *input, VertexSet *output){
 	VertexSet visited;
 	initializeVertexSet(&visited);
@@ -233,6 +269,29 @@ int transitionFunction(Graph *graph, Vertex *vertex, char alpha, VertexSet *vert
 	return 1;
 }
 
+int isIdEnd(Graph *graph, int id){
+	for(int i = 0; i < graph->numEnds; i++){
+		if(id == graph->idEnds[i])
+			return 1;
+	}
+	return 0;
+}
+
+int searchId(Graph *graph, int id){
+	for(int i = 0; i < graph->numVertexes; i++){
+		if(id == graph->vertexes[i].id)
+			return 1;
+	}
+	return 0;
+}
+
+void getAlphabet(Graph *graph, char *alphabet){
+	int i;
+	for(i = 0; i < graph->numAlphabet; i++){
+		alphabet[i] = graph->alphabet[i];
+	}
+	alphabet[i] = 0;
+}
 
 void printGraph(Graph *graph){
 	printf("idStart: %d, Vertexes:{", graph->idStart);

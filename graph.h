@@ -11,14 +11,20 @@ typedef struct Transition Transition;
 typedef struct VertexSet VertexSet;
 
 struct VertexSet{
+	int id;
 	int numVertex;
 	Vertex *set[MAX_VERTEXES];
 };
 
 void initializeVertexSet(VertexSet *);
+void setIdVertexSet(VertexSet *, int);
 int setVertexSet(VertexSet *, Vertex **, int);
 int insertVertexSet(VertexSet *, Vertex *);
 Vertex *searchVertexSet(VertexSet *, Vertex *);
+int equalVertexSet(VertexSet *, VertexSet *);
+void transitionVertexSet(VertexSet *, VertexSet *, Graph *, char);
+void epsilonClosureVertexSet(VertexSet *, Graph *);
+void epsilonAndTransitionVertexSet(VertexSet *, VertexSet *, Graph *, char);
 void printSet(VertexSet *);
 
 struct Transition{
@@ -57,13 +63,15 @@ int addTransition(Graph *, Transition);
 
 int autoSetIdStart(Graph *);
 int autoSetIdEnds(Graph *);
-int getVertexIdx(Graph *, int);
 
+int getVertexIdx(Graph *, int);
+Vertex *getStart(Graph *);
 int getEpsilonClosure(Graph *, VertexSet *, VertexSet *);
 int getEpsilonClosureRecursive(Graph *, VertexSet *, VertexSet *);
 int transitionFunction(Graph *, Vertex *, char, VertexSet *);
+int isIdEnd(Graph *, int);
+int searchId(Graph *, int);
+void getAlphabet(Graph *, char *);
 
 void printGraph(Graph *);
-
-
 #endif
