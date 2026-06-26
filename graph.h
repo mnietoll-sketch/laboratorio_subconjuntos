@@ -12,11 +12,15 @@ typedef struct VertexSet VertexSet;
 
 struct VertexSet{
 	int id;
+	int marked;
 	int numVertex;
 	Vertex *set[MAX_VERTEXES];
 };
 
 void initializeVertexSet(VertexSet *);
+void markVertexSet(VertexSet *);
+void clearVertexSet(VertexSet *);
+int isMarkedVertexSet(VertexSet *);
 void setIdVertexSet(VertexSet *, int);
 int setVertexSet(VertexSet *, Vertex **, int);
 int insertVertexSet(VertexSet *, Vertex *);
@@ -25,6 +29,7 @@ int equalVertexSet(VertexSet *, VertexSet *);
 void transitionVertexSet(VertexSet *, VertexSet *, Graph *, char);
 void epsilonClosureVertexSet(VertexSet *, Graph *);
 void epsilonAndTransitionVertexSet(VertexSet *, VertexSet *, Graph *, char);
+int containsEndVertexSet(VertexSet *);
 void printSet(VertexSet *);
 
 struct Transition{

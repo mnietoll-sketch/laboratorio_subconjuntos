@@ -10,3 +10,5 @@ subset.o: subset.c subset.h graph.h node.h
 	gcc -c -g subset.c
 clean:
 	rm *.o test
+run:
+	./test

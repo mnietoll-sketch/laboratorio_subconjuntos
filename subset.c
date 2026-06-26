@@ -9,6 +9,13 @@ void initializationSet(Set *set){
 	set->num = 0;
 }
 
+VertexSet *selectNotMarkedSet(Set *set){
+	for(int i = 0; i < set->num; i++)
+		if(set->arr[i]->marked == 0)
+			return set->arr[i];
+	return NULL;
+}
+
 int equalSet(Set *set1, Set *set2){
 	if(set1->num != set2->num)
 		return 0;
@@ -35,7 +42,7 @@ int insertSet(Set *set, VertexSet *vertexSet){
 		return 0;
 
 	if(searchSet(set, vertexSet) == NULL){
-		set->arr[set->num] == vertexSet;
+		set->arr[set->num] = vertexSet;
 		set->num++;
 	}
 	return 1;
@@ -59,19 +66,23 @@ void insertOperation(Set *set, Graph *graph, VertexSet* vertexSets, int *id, int
 void startOperation(Graph *nfa, Graph *dfa, Set *set, VertexSet *vertexSets, int *id){
 	char alphabet[MAX_ALPHABET];
 	getAlphabet(nfa, alphabet);
-	setAlphabet(dfa, alphabet, nfa->numAlphabet);
+	for(int i = 0; i < nfa->numAlphabet; i++){
+		if(alphabet[i] == EPSILON)
+			alphabet[i] = alphabet[nfa->numAlphabet - 1];
+		break;
+	}
+	setAlphabet(dfa, alphabet, nfa->numAlphabet - 1);
 
 	Vertex *nfaStart = getStart(nfa);
 	insertVertexSet(&vertexSets[*id], nfaStart);
 	epsilonClosureVertexSet(&vertexSets[*id], nfa);
 
-	printSet(&vertexSets[*id]);
 	insertOperation(set, dfa, vertexSets, id, 1, 0);
 }
 
 void subsetOperation(Graph *nfa, Graph *dfa){
-	VertexSet *vertexSets = (VertexSet *)malloc(MAX_VERTEXES * sizeof(VertexSet));
-	for(int i = 0; i < MAX_VERTEXES; i++){
+	VertexSet *vertexSets = (VertexSet *)malloc((MAX_VERTEXES + 1) * sizeof(VertexSet));
+	for(int i = 0; i < (MAX_VERTEXES + 1); i++){
 		initializeVertexSet(&vertexSets[i]);
 		setIdVertexSet(&vertexSets[i], i);
 	}
@@ -83,6 +94,30 @@ void subsetOperation(Graph *nfa, Graph *dfa){
 	
 	startOperation(nfa, dfa, &set, vertexSets, &id);
 
+	VertexSet *it;
+	while((it = selectNotMarkedSet(&set)) != NULL){
+		markVertexSet(it);
+		for(int i = 0; i < dfa->numAlphabet; i++){
+			epsilonAndTransitionVertexSet(it, &vertexSets[id], dfa, dfa->alphabet[i]);
+
+			VertexSet *foundedVertexSet;
+			if((foundedVertexSet = searchSet(&set, &vertexSets[id])) == NULL){
+				if(containsEndVertexSet(&vertexSets[id]))
+					insertOperation(&set, dfa, vertexSets, &id, 0, 1);
+				else
+					insertOperation(&set, dfa, vertexSets, &id, 0, 0);
+				Transition transition;
+				transition = initializeTransition(it->id, id - 1, dfa->alphabet[i]);
+				addTransition(dfa, transition);
+			} else{
+				Transition transition;
+				transition = initializeTransition(it->id, foundedVertexSet->id, dfa->alphabet[i]);
+				addTransition(dfa, transition);
+				clearVertexSet(&vertexSets[id]);
+			}
+		}
+	}
+	autoSetIdEnds(dfa);
 	free(vertexSets);
 }
 

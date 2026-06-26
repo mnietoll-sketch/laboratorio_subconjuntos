@@ -12,6 +12,7 @@ struct Set{
 };
 
 void initializationSet(Set *);
+VertexSet *selectNotMarkedSet(Set *);
 int equalSet(Set *, Set *);
 VertexSet *searchSet(Set *, VertexSet *);
 int insertSet(Set *, VertexSet *);

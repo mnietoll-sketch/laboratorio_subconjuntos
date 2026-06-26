@@ -4,7 +4,21 @@
 
 void initializeVertexSet(VertexSet *vertexSet){
 	vertexSet->numVertex = 0;
+	vertexSet->marked = 0;
 }
+
+void markVertexSet(VertexSet *vertexSet){
+	vertexSet->marked = 1;
+}
+
+int isMarkedVertexSet(VertexSet *vertexSet){
+	return vertexSet->marked;
+}
+
+void clearVertexSet(VertexSet *vertexSet){
+	vertexSet->numVertex = 0;
+}
+
 void setIdVertexSet(VertexSet *vertexSet, int id){
 	vertexSet->id = id;
 }
@@ -63,6 +77,13 @@ void epsilonClosureVertexSet(VertexSet *vertexSet, Graph *graph){
 void epsilonAndTransitionVertexSet(VertexSet *input, VertexSet *output, Graph *graph, char c){
 	transitionVertexSet(input, output, graph, c);
 	epsilonClosureVertexSet(output, graph);
+}
+
+int containsEndVertexSet(VertexSet *vertexSet){
+	for(int i = 0; i < vertexSet->numVertex; i++)
+		if(vertexSet->set[i]->isEnd)
+			return 1;
+	return 0;
 }
 
 void printSet(VertexSet *vertexSet){
@@ -257,9 +278,6 @@ int getEpsilonClosureRecursive(Graph *graph, VertexSet *visited, VertexSet *inpu
 }
 
 int transitionFunction(Graph *graph, Vertex *vertex, char alpha, VertexSet *vertexSet){
-	if(!insertVertexSet(vertexSet, vertex))
-		return 0;
-
 	for(int i = 0; i < vertex->numEdges; i++){
 		if(vertex->edges[i]->alpha == alpha)
 			if(!insertVertexSet(vertexSet, vertex->edges[i]->dest))
